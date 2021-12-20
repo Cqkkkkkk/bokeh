@@ -1,9 +1,8 @@
 from PyQt5.QtCore import QRect, reset, Qt
 from PyQt5.QtWidgets import QFileDialog, QMainWindow, QAction, QPushButton, QSlider, QWidget, QLabel, QGridLayout, QMenuBar, QMenu, QStatusBar, QApplication
-from PyQt5.QtGui import QImage, QPixmap, QColor
+from PyQt5.QtGui import QImage, QPixmap, QColor, QFont
 import os
 import cv2
-from numpy import fabs
  
 
 class MainWindow(QMainWindow):
@@ -31,6 +30,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('Main')
         self.centralwidget = QWidget(self)
         self.centralwidget.setObjectName('centralwidget')
+
         self.initButton()
         self.initLabel()
         self.initGrapic()
@@ -43,24 +43,28 @@ class MainWindow(QMainWindow):
     def initSlider(self):
         # slider for kernel size
         self.sli_kernel_size = QSlider(Qt.Horizontal, self)
-        self.sli_kernel_size.setGeometry(QRect(710, 600, 150, 20))
+        self.sli_kernel_size.setGeometry(QRect(840, 520, 150, 20))
         self.sli_kernel_size.valueChanged[int].connect(self.func_change_kernel_size)
         self.sli_kernel_size.setTickInterval(10)
+        self.sli_kernel_size.setToolTip('Set the size of blur kernel')
 
         self.sli_threshold = QSlider(Qt.Horizontal, self)
-        self.sli_threshold.setGeometry(QRect(710, 640, 150, 20))
+        self.sli_threshold.setGeometry(QRect(840, 550, 150, 20))
         self.sli_threshold.valueChanged[int].connect(self.func_change_threshold)
         self.sli_threshold.setTickInterval(10)
+        self.sli_threshold.setToolTip("Set the threshold of the front scene's depth")
 
         self.sli_depth_a = QSlider(Qt.Horizontal, self)
-        self.sli_depth_a.setGeometry(QRect(710, 600, 150, 20))
+        self.sli_depth_a.setGeometry(QRect(840, 520, 150, 20))
         self.sli_depth_a.valueChanged[int].connect(self.func_change_a)
         self.sli_depth_a.setTickInterval(10)
+        self.sli_depth_a.setToolTip('Set the parameter a, which controls the iter rounds and depth-split scope')
 
         self.sli_depth_df = QSlider(Qt.Horizontal, self)
-        self.sli_depth_df.setGeometry(QRect(710, 640, 150, 20))
+        self.sli_depth_df.setGeometry(QRect(840, 550, 150, 20))
         self.sli_depth_df.valueChanged[int].connect(self.func_change_df)
         self.sli_depth_df.setTickInterval(10)
+        self.sli_depth_df.setToolTip('Set the focus depth df')
 
         self.sli_depth_a.setHidden(True)
         self.sli_depth_df.setHidden(True)
@@ -81,7 +85,7 @@ class MainWindow(QMainWindow):
         # pic_original.setPixmap(QPixmap('gui_assets/icon.png'))
         self.pic_original.setObjectName("label")
         self.pic_original.setScaledContents(True)
-        self.pic_original.mousePressEvent = self.getPos
+        self.pic_original.mousePressEvent = self.func_get_depth
         gridLayout.addWidget(self.pic_original, 0, 1, 1, 1)
 
         gridLayoutWidget_2 = QWidget(self.centralwidget)
@@ -108,7 +112,7 @@ class MainWindow(QMainWindow):
         # pic_blured.setPixmap(QPixmap('gui_assets/icon.png'))
         self.pic_depth.setObjectName("label")
         self.pic_depth.setScaledContents(True)
-        self.pic_depth.mousePressEvent = self.getPos
+        self.pic_depth.mousePressEvent = self.func_get_depth
         gridLayout_3.addWidget(self.pic_depth, 0, 1, 1, 1)
 
         self.pic_depth.setPixmap(QPixmap(self.depth_path))
@@ -117,23 +121,6 @@ class MainWindow(QMainWindow):
 
         self.setCentralWidget(self.centralwidget)
 
-    def getPos(self, event):
-        if self.mode == 'depth':
-            x = event.pos().x()
-            y = event.pos().y()
-            depth = QImage(self.depth_path)
-            depth_norm = cv2.imread(self.depth_path).max()
-
-            x *= depth.width() / 400
-            y *= depth.height() / 300
-            c = depth.pixel(x, y)
-            
-            cur_depth = QColor(c).getRgb()[0]
-            cur_depth = int(cur_depth / depth_norm * 255)
-            self.df = cur_depth
-            self.label_slider_df.setText('df: {}'.format(cur_depth))
-            self.statusbar.showMessage('Now setting focus depth df to {:.0f}'.format(cur_depth))
-            
 
     def initLabel(self):
          # Text label 'original' and 'blur'
@@ -141,6 +128,7 @@ class MainWindow(QMainWindow):
         label_original.setGeometry(QRect(270, 40, 60, 16))
         label_original.setObjectName("Original")
         label_original.setText('Original')
+        # label_original.setFont(QFont('思源宋体 CN', 12))
 
         label_blured = QLabel(self.centralwidget)
         label_blured.setGeometry(QRect(770, 40, 60, 16))
@@ -153,22 +141,22 @@ class MainWindow(QMainWindow):
         label_depth.setText('Depth')
 
         self.label_slider_kernel_size = QLabel(self.centralwidget)
-        self.label_slider_kernel_size.setGeometry(QRect(600, 577, 100, 20))
+        self.label_slider_kernel_size.setGeometry(QRect(720, 497, 100, 20))
         self.label_slider_kernel_size.setObjectName('SliderKernelSizeLabel')
         self.label_slider_kernel_size.setText('Kernel size: {}'.format(self.kernel_size))
 
         self.label_slider_threshold = QLabel(self.centralwidget)
-        self.label_slider_threshold.setGeometry(QRect(600, 617, 100, 20))
+        self.label_slider_threshold.setGeometry(QRect(720, 527, 100, 20))
         self.label_slider_threshold.setObjectName('SliderThresholdLabel')
         self.label_slider_threshold.setText('Threshold: {}'.format(self.threshold))
 
         self.label_slider_a = QLabel(self.centralwidget)
-        self.label_slider_a.setGeometry(QRect(600, 577, 100, 20))
+        self.label_slider_a.setGeometry(QRect(720, 497, 100, 20))
         self.label_slider_a.setObjectName('SliderDepth-aLabel')
         self.label_slider_a.setText('a: {:.3f}'.format(self.a))
 
         self.label_slider_df = QLabel(self.centralwidget)
-        self.label_slider_df.setGeometry(QRect(600, 617, 100, 20))
+        self.label_slider_df.setGeometry(QRect(720, 527, 100, 20))
         self.label_slider_df.setObjectName('SliderDepth-dfLabel')
         self.label_slider_df.setText('df: {}'.format(self.df))
     
@@ -199,7 +187,7 @@ class MainWindow(QMainWindow):
         actionExit = QAction()
         actionExit.setObjectName("actionExit")
         actionExit.setText('Exit')
-
+        
 
         actionOpen = QAction(self)
         actionOpen.setObjectName("actionOpen")
@@ -210,25 +198,26 @@ class MainWindow(QMainWindow):
         actionSave = QAction(self)
         actionSave.setObjectName('actionSave')
         actionSave.setText('Save')
+        actionSave.setToolTip('Save the blured image')
         actionSave.triggered.connect(self.func_save_blured)
 
 
         actionSimple = QAction(self)
         actionSimple.setObjectName("actionSimple")
         actionSimple.setText('Simple')
-        actionSimple.setToolTip('Simple blur effect')
+        actionSimple.setToolTip('Switch to the Simple blur effect')
         actionSimple.triggered.connect(self.func_set_type_simple)
 
         actionDepth = QAction(self)
         actionDepth.setObjectName("actionDepth")
         actionDepth.setText('Depth')
-        actionDepth.setToolTip('Depth-aware blur effect')
+        actionDepth.setToolTip('Switch to the Depth-aware blur effect')
         actionDepth.triggered.connect(self.func_set_type_depth)
 
         actionDNN = QAction(self)
         actionDNN.setObjectName("actionDNN")
         actionDNN.setText('DNN')
-        actionDNN.setToolTip('Deep Neural Network based bokeh effect')
+        actionDNN.setToolTip('Switch to the Deep Neural Network based bokeh effect')
         actionDNN.triggered.connect(self.func_set_type_dnn)
 
         self.actionMean = QAction(self)
@@ -257,18 +246,23 @@ class MainWindow(QMainWindow):
 
         menuFile.addAction(actionOpen)
         menuFile.addAction(actionSave)
+        menuFile.addAction(actionExit)
         menuMode.addAction(actionSimple)
         menuMode.addAction(actionDepth)
         menuMode.addAction(actionDNN)
         menuKernel.addAction(self.actionMean)
-
         menuKernel.addAction(self.actionGauss)
         menuKernel.addAction(self.actionRadial)
         menuKernel.addAction(self.actionTanh)
 
+        menuFile.setToolTipsVisible(True)
+        menuMode.setToolTipsVisible(True)
+        menuKernel.setToolTipsVisible(True)
+
         menuBar.addAction(menuFile.menuAction())
         menuBar.addAction(menuMode.menuAction())
         menuBar.addAction(menuKernel.menuAction())
+        
         menuBar.setNativeMenuBar(False)
 
     def initStatusBar(self):
@@ -279,10 +273,28 @@ class MainWindow(QMainWindow):
 
     def initButton(self):
         pushButton = QPushButton(self.centralwidget)
-        pushButton.setGeometry(QRect(650, 500, 100, 50))
+        pushButton.setGeometry(QRect(595, 500, 100, 50))
         pushButton.setObjectName("pushButton")
         pushButton.setText('Convert')
         pushButton.clicked.connect(self.func_do_convert)
+
+    def func_get_depth(self, event):
+        if self.mode == 'depth':
+            x = event.pos().x()
+            y = event.pos().y()
+            depth = QImage(self.depth_path)
+            depth_norm = cv2.imread(self.depth_path).max()
+
+            x *= depth.width() / 400
+            y *= depth.height() / 300
+            c = depth.pixel(x, y)
+            
+            cur_depth = QColor(c).getRgb()[0]
+            cur_depth = int(cur_depth / depth_norm * 255)
+            self.df = cur_depth
+            self.label_slider_df.setText('df: {}'.format(cur_depth))
+            self.statusbar.showMessage('Now setting focus depth df to {:.0f}'.format(cur_depth))
+            
 
     def func_open_original(self):
         path, type_ = QFileDialog.getOpenFileName(self, 'Open a file', '', 'All Files (*.*)')
@@ -308,7 +320,7 @@ class MainWindow(QMainWindow):
         
 
     def func_change_threshold(self, value):
-        self.threshold = value + 1
+        self.threshold =  int(value / 100 * 255)
         self.label_slider_threshold.setText('Threshold: {}'.format(self.threshold))
         self.statusbar.showMessage('Current front image depth threshold: {}'.format(self.threshold))
 
