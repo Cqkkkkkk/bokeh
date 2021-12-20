@@ -1,1 +1,3 @@
 DMSHN/checkpoints/
+__pycache__/
+.vscode/
