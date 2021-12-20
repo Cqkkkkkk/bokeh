@@ -1,6 +1,6 @@
 from PyQt5.QtCore import QRect, reset, Qt
-from PyQt5.QtWidgets import QFileDialog, QMainWindow, QAction, QPushButton, QSlider, QWidget, QLabel, QGridLayout, QMenuBar, QMenu, QStatusBar
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QFileDialog, QMainWindow, QAction, QPushButton, QSlider, QWidget, QLabel, QGridLayout, QMenuBar, QMenu, QStatusBar, QApplication
+from PyQt5.QtGui import QImage, QPixmap, QColor
 import os
 import cv2
 from numpy import fabs
@@ -81,6 +81,7 @@ class MainWindow(QMainWindow):
         # pic_original.setPixmap(QPixmap('gui_assets/icon.png'))
         self.pic_original.setObjectName("label")
         self.pic_original.setScaledContents(True)
+        self.pic_original.mousePressEvent = self.getPos
         gridLayout.addWidget(self.pic_original, 0, 1, 1, 1)
 
         gridLayoutWidget_2 = QWidget(self.centralwidget)
@@ -107,6 +108,7 @@ class MainWindow(QMainWindow):
         # pic_blured.setPixmap(QPixmap('gui_assets/icon.png'))
         self.pic_depth.setObjectName("label")
         self.pic_depth.setScaledContents(True)
+        self.pic_depth.mousePressEvent = self.getPos
         gridLayout_3.addWidget(self.pic_depth, 0, 1, 1, 1)
 
         self.pic_depth.setPixmap(QPixmap(self.depth_path))
@@ -114,6 +116,24 @@ class MainWindow(QMainWindow):
         # self.pic_blured.setPixmap(QPixmap('data/input/1002.jpg'))
 
         self.setCentralWidget(self.centralwidget)
+
+    def getPos(self, event):
+        if self.mode == 'depth':
+            x = event.pos().x()
+            y = event.pos().y()
+            depth = QImage(self.depth_path)
+            depth_norm = cv2.imread(self.depth_path).max()
+
+            x *= depth.width() / 400
+            y *= depth.height() / 300
+            c = depth.pixel(x, y)
+            
+            cur_depth = QColor(c).getRgb()[0]
+            cur_depth = int(cur_depth / depth_norm * 255)
+            self.df = cur_depth
+            self.label_slider_df.setText('df: {}'.format(cur_depth))
+            self.statusbar.showMessage('Now setting focus depth df to {:.0f}'.format(cur_depth))
+            
 
     def initLabel(self):
          # Text label 'original' and 'blur'
