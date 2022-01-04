@@ -1,2 +1,1 @@
-python GenrateDepth.py --load_ckpt res101.pth --backbone resnet101     
-# python GenrateDepth.py --load_ckpt res50.pth --backbone resnet50    
+python3 LeRes/generate_all.py --input_dir ./data/input --output_dir ./data/depth
