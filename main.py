@@ -8,8 +8,10 @@ from simple_blur import SimpleBlur
 from depth_blur import DepthBlur
 from DMSHN.DNNBlur import DNNBlur
 from utils import Ndarray2QPixmap
+from modify_depth import ModifyDepthByMask
+from U2Net.MaskGenerator import GenerateMask
 
-
+import os
 
 
 class MyWindow(MainWindow):
@@ -31,7 +33,16 @@ class MyWindow(MainWindow):
             blur = SimpleBlur(kernel_size=self.kernel_size,
                               kernel_type=self.kernel)
             image = cv2.imread(self.image_path)
+
             depth = cv2.imread(self.depth_path)
+
+            if self.depthModify:
+                if not os.path.exists(self.mask_path):
+                    self.statusbar.showMessage('No depth mask detected in {}. Generating'.format(self.mask_path))
+                    GenerateMask(self.image_path, './data/mask')
+                mask = cv2.imread(self.mask_path)
+                depth = ModifyDepthByMask().forward(depth, mask)
+
             depth = depth / depth.max() * 255
             depth = depth.astype(int)
 
@@ -50,6 +61,16 @@ class MyWindow(MainWindow):
             blur = DepthBlur(kernel_type=self.kernel, a=self.a, df=self.df)
             image = cv2.imread(self.image_path)
             depth = cv2.imread(self.depth_path)
+
+            if self.depthModify:
+                print(self.mask_path)
+                print(os.path.exists(self.mask_path))
+                if not os.path.exists(self.mask_path):
+                    self.statusbar.showMessage('No depth mask detected in {}. Generating'.format(self.mask_path))
+                    GenerateMask(self.image_path, './data/mask')
+                mask = cv2.imread(self.mask_path)
+                depth = ModifyDepthByMask().forward(depth, mask)
+
             depth = depth / depth.max() * 255
             depth = depth.astype(int)
 

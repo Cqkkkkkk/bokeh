@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QRect, reset, Qt
-from PyQt5.QtWidgets import QFileDialog, QMainWindow, QAction, QPushButton, QSlider, QWidget, QLabel, QGridLayout, QMenuBar, QMenu, QStatusBar, QApplication
+from PyQt5.QtWidgets import QFileDialog, QMainWindow, QAction, QPushButton, QSlider, QWidget, QLabel, QGridLayout, QMenuBar, QMenu, QStatusBar, QApplication, QRadioButton
 from PyQt5.QtGui import QImage, QPixmap, QColor, QFont
 import os
 import cv2
@@ -17,6 +17,7 @@ class MainWindow(QMainWindow):
         # for mode depth-aware
         self.a = 0.05
         self.df = 50
+        self.depthModify = False
 
         self.image_path = 'data/input/1002.jpg'
         self.depth_path = 'data/depth/1002-depth.png'
@@ -278,6 +279,11 @@ class MainWindow(QMainWindow):
         pushButton.setText('Convert')
         pushButton.clicked.connect(self.func_do_convert)
 
+        self.depthModifyButton = QRadioButton(self.centralwidget)
+        self.depthModifyButton.setGeometry(QRect(720, 560, 120, 20))
+        self.depthModifyButton.setText('DepthModify')
+        self.depthModifyButton.toggled.connect(self.func_set_depthmodify)
+
     def func_get_depth(self, event):
         if self.mode == 'depth':
             x = event.pos().x()
@@ -413,3 +419,16 @@ class MainWindow(QMainWindow):
         if self.mode == 'dnn':
             self.actionTanh.setVisible(False)
             self.actionRadial.setVisible(False)    
+            self.depthModifyButton.setHidden(True)
+        else:
+            self.depthModifyButton.setHidden(False)
+
+    def func_set_depthmodify(self):
+        if self.depthModifyButton.isChecked():
+            self.depthModify = True
+            self.statusbar.showMessage('Depth modify on')
+        else:
+            self.depthModify = False
+            self.statusbar.showMessage('Depth modify off')
+
+        

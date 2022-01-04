@@ -2,5 +2,8 @@ DMSHN/checkpoints/
 LeRes/ckpts/
 LeRes/input/
 LeRes/output/
+U2Net/ckpts/
+U2Net/inputs/
+U2Net/outputs/
 __pycache__/
 .vscode/

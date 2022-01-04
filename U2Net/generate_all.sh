@@ -1,0 +1,1 @@
+python3 U2Net/generate_all.py 
