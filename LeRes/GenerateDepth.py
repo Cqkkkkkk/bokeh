@@ -1,3 +1,12 @@
+
+import sys
+from os import path
+
+sys.path.append("..")
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+sys.path.append(path.dirname(path.abspath(__file__)))
+sys.path.append(path.abspath(__file__))
+
 from lib.multi_depth_model_woauxi import RelDepthModel
 from lib.net_tools import load_ckpt
 import torchvision.transforms as transforms
@@ -7,14 +16,11 @@ import argparse
 import numpy as np
 import torch
 
-
 def parse_args():
     parser = argparse.ArgumentParser(
         description='Configs for LeReS')
-    parser.add_argument('--load_ckpt', default='./ckpts/res101.pth', help='Checkpoint path to load')
+    parser.add_argument('--load_ckpt', default='./LeRes/ckpts/res101.pth', help='Checkpoint path to load')
     parser.add_argument('--backbone', default='resnet101', help='Checkpoint path to load')
-    parser.add_argument('--input_dir', default='./input')
-    parser.add_argument('--output_dir', default='./output')
 
     args = parser.parse_args()
     return args
@@ -71,5 +77,5 @@ def TestDepth(input_image, output_dir):
 
 
 if __name__ == '__main__':
-    
+    raise NotImplementedError
     TestDepth('./input/1002.jpg', './output')

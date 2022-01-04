@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QFileDialog, QMainWindow, QAction, QPushButton, QSli
 from PyQt5.QtGui import QImage, QPixmap, QColor, QFont
 import os
 import cv2
- 
+from LeRes.GenerateDepth import TestDepth
 
 class MainWindow(QMainWindow):
     
@@ -307,6 +307,12 @@ class MainWindow(QMainWindow):
             self.image_path = path
             image = QPixmap(self.image_path)
             self.pic_original.setPixmap(image)
+
+            if not os.path.exists(self.depth_path):
+                self.statusbar.showMessage('Cannot detect depth map in {}. Generating depth map'.format(self.depth_path))
+                print('Cannot detect depth map in {}. Generating depth map'.format(self.depth_path))
+                TestDepth(input_image=self.image_path, output_dir='./data/depth')
+
             depth = QPixmap(self.depth_path)
             self.pic_depth.setPixmap(depth)
         

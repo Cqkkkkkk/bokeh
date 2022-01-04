@@ -26,10 +26,10 @@ def get_func(func_name):
 
 def load_ckpt(args, depth_model, shift_model, focal_model):
     if os.path.isfile(args.load_ckpt):
-        checkpoint = torch.load(args.load_ckpt)
+        checkpoint = torch.load(args.load_ckpt, map_location=torch.device('cpu'))
         if shift_model is not None:
             shift_model.load_state_dict(strip_prefix_if_present(checkpoint['shift_model'], 'module.'),
-                                    strict=True)
+                                    strict=True, )
         if focal_model is not None:
             focal_model.load_state_dict(strip_prefix_if_present(checkpoint['focal_model'], 'module.'),
                                     strict=True)

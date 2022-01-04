@@ -17,7 +17,6 @@ class MyWindow(MainWindow):
         super().__init__()
 
     def func_do_convert(self):
-        print(self.mode)
         if self.mode != 'dnn':
             self.statusbar.showMessage(
                 'Now bluring with mode [{}] and kernel [{}] with size ({}, {})'.
