@@ -1,3 +1,6 @@
 DMSHN/checkpoints/
+LeRes/ckpts/
+LeRes/input/
+LeRes/output/
 __pycache__/
 .vscode/
