@@ -22,6 +22,8 @@ device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 feed_width = 1536
 feed_height = 1024
 
+import time
+
 
 class DNNBlur():
     def __init__(self) -> None:

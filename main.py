@@ -17,6 +17,7 @@ import os
 class MyWindow(MainWindow):
     def __init__(self):
         super().__init__()
+        self.dnnblur = None
 
     def func_do_convert(self):
         if self.mode != 'dnn':
@@ -82,7 +83,11 @@ class MyWindow(MainWindow):
 
         elif self.mode == 'dnn':
             image = pil.open(self.image_path).convert('RGB')
-            blur = DNNBlur()
+            if self.dnnblur is None:
+                self.statusbar.showMessage('Loading dnn model')
+                self.dnnblur = DNNBlur()
+                self.statusbar.showMessage('Load finished')
+            blur = self.dnnblur
             blured = blur.forward(image)
             
             self.pic_blured.setPixmap(Ndarray2QPixmap(blured))
