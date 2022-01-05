@@ -69,4 +69,4 @@ python3 main.py
 ```
 一个例子如下所示:
 
-![image](https://pimags.oss-cn-beijing.aliyuncs.com/uPic/1002-df-0-220.gif)
+![image](https://pimags.oss-cn-beijing.aliyuncs.com/uPic/df-range.gif)
