@@ -67,6 +67,5 @@ python3 main.py
 ```bash
 ./U2Net/generate_all.sh
 ```
-一个例子如下所示:
-
+一个例子如下所示:（如果无法加载，下载[链接](https://pimags.oss-cn-beijing.aliyuncs.com/uPic/df-range.gif)）
 ![image](https://pimags.oss-cn-beijing.aliyuncs.com/uPic/df-range.gif)
