@@ -110,7 +110,7 @@ def main(args):
 
 if __name__ == "__main__":
     argument_parser = argparse.ArgumentParser()
-    argument_parser.add_argument('--input_dir', default='./inputs')
-    argument_parser.add_argument('--output_dir', default='./outputs')
+    argument_parser.add_argument('--input_dir', default='./data/input')
+    argument_parser.add_argument('--output_dir', default='./data/mask')
     args = argument_parser.parse_args()
     main(args)

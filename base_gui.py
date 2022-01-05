@@ -83,7 +83,6 @@ class MainWindow(QMainWindow):
         gridLayout.setObjectName("gridLayout")
 
         self.pic_original = QLabel()
-        # pic_original.setPixmap(QPixmap('gui_assets/icon.png'))
         self.pic_original.setObjectName("label")
         self.pic_original.setScaledContents(True)
         self.pic_original.mousePressEvent = self.func_get_depth
@@ -97,7 +96,6 @@ class MainWindow(QMainWindow):
         gridLayout_2.setObjectName("gridLayout_2")
 
         self.pic_blured = QLabel()
-        # pic_blured.setPixmap(QPixmap('gui_assets/icon.png'))
         self.pic_blured.setObjectName("label")
         self.pic_blured.setScaledContents(True)
         gridLayout_2.addWidget(self.pic_blured, 0, 1, 1, 1)
@@ -110,7 +108,6 @@ class MainWindow(QMainWindow):
         gridLayout_3.setObjectName("gridLayout_3")
 
         self.pic_depth = QLabel()
-        # pic_blured.setPixmap(QPixmap('gui_assets/icon.png'))
         self.pic_depth.setObjectName("label")
         self.pic_depth.setScaledContents(True)
         self.pic_depth.mousePressEvent = self.func_get_depth
